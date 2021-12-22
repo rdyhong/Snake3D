@@ -13,7 +13,6 @@ public class UIManager : MonoBehaviour
             {
                 m_instance = FindObjectOfType<UIManager>();
             }
-
             return m_instance;
         }
     }

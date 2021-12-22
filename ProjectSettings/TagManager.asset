@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Tails
+  - Debris
   layers:
   - Default
   - TransparentFX

@@ -15,25 +15,13 @@ public class CameraMovement : MonoBehaviour
         followCam.LookAt = pPlay.transform;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //if(Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    IsPlayerDead(true);
-        //}
-        //else if (Input.GetKeyUp(KeyCode.Space))
-        //{
-        //    IsPlayerDead(false);
-        //}
-    }
-
     public void IsPlayerDead(bool isdead)
     {
         if (isdead)
         {
             followCam.Follow = pDead.transform;
             followCam.LookAt = pDead.transform;
+            
         }
         else
         {

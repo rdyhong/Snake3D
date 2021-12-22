@@ -6956,7 +6956,7 @@ GameObject:
   - component: {fileID: 1256018564258095308}
   m_Layer: 0
   m_Name: Debris
-  m_TagString: Untagged
+  m_TagString: Debris
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7112,7 +7112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21f4dbf9e78ce4cd4b04bfa82dc83050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debris: {fileID: 4717694737853652751}
 --- !u!1 &4785169094876034437
 GameObject:
   m_ObjectHideFlags: 0

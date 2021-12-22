@@ -16,13 +16,14 @@ public class ObjectPool : MonoBehaviour
             return m_instance;
         }
     }
+
     [SerializeField]
     private GameObject poolingObjPrefab;
     private Queue<GameObject> poolingObjQueue = new Queue<GameObject>();
 
     private void Awake()
     {
-        Initialize(10);
+        Initialize(100);
     }
 
     private GameObject CreateNewGameObject()

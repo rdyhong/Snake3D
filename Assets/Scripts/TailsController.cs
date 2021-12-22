@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class TailsController : MonoBehaviour
 {
-
-    // Debris
-    public GameObject drPrefab;
-    float m_force = 0f;
-    Vector3 m_offset = Vector3.zero;
-
-    //
     private BoxCollider col;
     public bool isOnPlayer = false;
     public int teamNum { get; private set; }
@@ -28,28 +21,26 @@ public class TailsController : MonoBehaviour
     {
         SnakeController sc = other.transform.GetComponent<SnakeController>();
         TailsController tc = other.transform.GetComponent<TailsController>();
-        if (isOnPlayer || tc != null)
-        {
-            return;
-        }
+        if (isOnPlayer || tc != null) return;
         if (other.transform.tag == "Player")
         {
             if (sc.isDead) return;
-            GameManager.instance.SpawnMeal();
-            sc.GrowSnake(transform.position);
-            Destroy(gameObject);
+            
+            sc.GrowSnake(gameObject ,transform.position);
         }
     }
-    int idxx;
+
     public void StartGet(int idx)
     {
+        isOnPlayer = true;
+        GameManager.instance.SpawnMeal();
         gameObject.GetComponent<BoxCollider>().enabled = false;
-        idxx = idx;
-        Invoke("PlayerGet", 1.1f);
+        teamNum = idx;
+        PlayerGet(idx);
     }
-    void PlayerGet()
+    void PlayerGet(int idx)
     {
-        if (idxx == 1)
+        if (idx == 1)
         {
             col.enabled = false;
         }
@@ -57,28 +48,6 @@ public class TailsController : MonoBehaviour
         {
             col.enabled = true;
         }
-        isOnPlayer = true;
+        
     }
-
-    public void SetTeamNum(int idx)
-    {
-        teamNum = idx;
-    }
-
-    //public void Explosion()
-    //{
-    //    Debug.Log("Explosion Active");
-    //    m_force = 60f;
-    //    m_offset = new Vector3(0, -0.25f, 0);
-    //    GameObject debris = ObjectPool.GetDebris();
-    //    debris.transform.position = transform.position;
-    //    //GameObject t_clone = Instantiate(drPrefab, transform.position, Quaternion.identity);
-    //    Rigidbody[] t_rb = debris.GetComponentsInChildren<Rigidbody>();
-    //    for (int i = 0; i < t_rb.Length; i++)
-    //    {
-    //        t_rb[i].AddExplosionForce(m_force, transform.position + m_offset, 10f);
-    //    }
-    //    //gameObject.SetActive(false);
-
-    //}
 }

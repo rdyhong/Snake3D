@@ -11,8 +11,8 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         followCam = gameObject.GetComponent<CinemachineVirtualCamera>();
-        followCam.Follow = pPlay.transform;
-        followCam.LookAt = pPlay.transform;
+        //followCam.Follow = pPlay.transform;
+        //followCam.LookAt = pPlay.transform;
     }
 
     public void IsPlayerDead(bool isdead)

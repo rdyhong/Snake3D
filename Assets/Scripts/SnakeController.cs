@@ -16,7 +16,7 @@ public class SnakeController : MonoBehaviour
     public int Gap = 8;
 
     // References
-    public GameObject BodyPrefab;
+    //public GameObject BodyPrefab;
     public bool isDead;
 
     // Lists

@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool : MonoBehaviour
+public class DebrisPool : MonoBehaviour
 {
-    public static ObjectPool m_instance;
-    public static ObjectPool instance
+    public static DebrisPool m_instance;
+    public static DebrisPool instance
     {
         get
         {
             if(m_instance == null)
             {
-                m_instance = FindObjectOfType<ObjectPool>();
+                m_instance = FindObjectOfType<DebrisPool>();
             }
             return m_instance;
         }
@@ -23,7 +23,7 @@ public class ObjectPool : MonoBehaviour
 
     private void Awake()
     {
-        Initialize(100);
+        Initialize(500);
     }
 
     private GameObject CreateNewGameObject()
@@ -49,7 +49,6 @@ public class ObjectPool : MonoBehaviour
             obj.transform.SetParent(null);
             obj.SetActive(true);
             return obj;
-
         }
         else
         {

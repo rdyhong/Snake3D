@@ -13,8 +13,8 @@ public class SnakeController : MonoBehaviour
     public float MoveSpeed = 5;
     public float SteerSpeed = 180;
     public float BodySpeed = 5;
-    public int Gap = 8;
-
+    public int Gap = 10;
+    public Material mat;
     // References
     //public GameObject BodyPrefab;
     public bool isDead;
@@ -24,38 +24,27 @@ public class SnakeController : MonoBehaviour
     private List<GameObject> BodyParts = new List<GameObject>();
     
     private List<Vector3> PositionsHistory = new List<Vector3>();
-
+    
     private void Configue()
     {
         rb = gameObject.GetComponent<Rigidbody>();
         col = gameObject.GetComponent<SphereCollider>();
         playerInput = gameObject.GetComponent<PlayerInput>();
         tailPos = transform.Find("TailPos");
-        Gap = 8;
+        Gap = 10;
         isDead = false;
     }
     void Start()
     {
+        teamNum = 1;
         Configue();
-
-        SetTeamNum(1);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    private void FixedUpdate() {
         if (isDead) return;
         Move();
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GetFreeTail();
-        }
-        else if(Input.GetKeyDown(KeyCode.Backspace))
-        {
-            PlayerDead();
-        }
     }
-
+    
     private void Move()
     {
         // Move forward
@@ -84,19 +73,29 @@ public class SnakeController : MonoBehaviour
         }
     }
 
-    public void GrowSnake(GameObject obj ,Vector3 pos)
+    public void GrowSnake(GameObject obj)
     {
         // add it to the list
         BodyParts.Add(obj);
+
+        //Set body
         TailsController tc = obj.GetComponent<TailsController>();
-        tc.StartGet(teamNum);
+        tc.isOnPlayer = true;
+        tc.col.enabled = false;
+        tc.teamNum = teamNum;
+
+        GameManager.instance.SpawnMeal();
+
+        //Remove Collider at first body
+        if (tc.teamNum == 1) tc.col.enabled = false;
+        else tc.col.enabled = true;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (isDead) return;
-        //PlayerDead();
-
+        if(collision.transform.tag == "Debris") return;
+        if(collision.transform.tag == "Item") return;
         if (collision.transform.tag == "Tails")
         {
             TailsController tc = collision.transform.GetComponent<TailsController>();
@@ -112,11 +111,6 @@ public class SnakeController : MonoBehaviour
         }
     }
 
-    public void SetTeamNum(int idx)
-    {
-        teamNum = idx;
-    }
-
     public void PlayerDead()
     {
         rb.useGravity = true;
@@ -128,23 +122,23 @@ public class SnakeController : MonoBehaviour
 
         if (BodyParts.Count != 0)
         {
-            StartCoroutine("BoomCoroutine");
+            StartCoroutine(BoomCoroutine());
         }
-        
     }
 
     IEnumerator BoomCoroutine()
     {
         foreach (var body in BodyParts)
         {
-            GameObject obj = ObjectPool.GetDebris();
-            obj.GetComponent<DebrisScript>().Expolsive(body);
+            GameObject obj = DebrisPool.GetDebris();
+            Color m_color = body.GetComponent<TailsController>().color;
+            obj.GetComponent<DebrisScript>().Expolsive(body, m_color);
             body.SetActive(false);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
-    void GetFreeTail()
+    public void GetFreeTail()
     {
         GameObject[] tails = GameObject.FindGameObjectsWithTag("Tails");
         for(int i = 0; i < tails.Length; i++)
@@ -153,11 +147,9 @@ public class SnakeController : MonoBehaviour
             if (tc.isOnPlayer) continue;
             else
             {
-                GrowSnake(tails[i], tails[i].transform.position);
+                GrowSnake(tails[i]);
             }
         }
-        
-        
     }
 
 }

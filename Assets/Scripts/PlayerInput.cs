@@ -12,12 +12,20 @@ public class PlayerInput : MonoBehaviour
     }
     private void Update()
     {
+        if (sc.isDead) return;
         KeyboardInput();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            sc.GetFreeTail();
+        }
+        else if(Input.GetKeyDown(KeyCode.Backspace))
+        {
+            sc.PlayerDead();
+        }
     }
 
     private void KeyboardInput()
     {
-        if (sc.isDead) return;
         dirX = Input.GetAxis("Horizontal");
     }
 }

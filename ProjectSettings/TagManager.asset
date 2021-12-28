@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Tails
   - Debris
+  - Item
   layers:
   - Default
   - TransparentFX

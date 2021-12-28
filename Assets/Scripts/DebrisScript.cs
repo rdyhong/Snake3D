@@ -6,43 +6,50 @@ public class DebrisScript : MonoBehaviour
 {
     private Rigidbody[] rb;
     private BoxCollider[] col;
-    //private Renderer renderer;
-
+    private Renderer[] rdr;
     private float m_force = 60f;
-    private Vector3 m_offset = Vector3.zero;
+    private Vector3 m_pos = Vector3.zero;
     private void Awake()
     {
         rb = this.gameObject.GetComponentsInChildren<Rigidbody>();
         col = this.gameObject.GetComponentsInChildren<BoxCollider>();
+        rdr = gameObject.GetComponentsInChildren<Renderer>();
         m_force = 140;
-        //m_offset = new Vector3(0, -0.25f, 0);
+        m_pos = new Vector3(0, -0.2f, 0);
     }
-
-    public void Expolsive(GameObject obj)
+    
+    public void Expolsive(GameObject obj, Color m_color)
     {
-        Material objRenderer = obj.GetComponent<Renderer>().material;
-        //renderer.material.SetTexture(objRenderer)
-
         transform.position = obj.transform.position;
         transform.rotation = obj.transform.rotation;
-        m_offset = new Vector3(0, -0.2f, 0);
         gameObject.SetActive(true);
         for (int i = 0; i < rb.Length; i++)
         {
+            rdr[i].material.color = m_color;
             if (Random.Range(0, 2) == 0) continue;
-            rb[i].AddExplosionForce(m_force, m_offset, 40f);
+            rb[i].AddExplosionForce(m_force, m_pos, 40f);
         }
-        StartCoroutine("DestroyCoroutine");
+        StartCoroutine(DestroyCoroutine());
     }
 
     IEnumerator DestroyCoroutine()
     {
-        yield return new WaitForSeconds(10f);
-        for(int i = 0; i < col.Length; i++)
+        //Remove Colider after Addforce
+        yield return new WaitForSeconds(0.1f);
+        // for(int i = 0; i < col.Length; i++)
+        // {
+        //     col[i].enabled = true;
+        // }
+        
+        //Fade
+        while(rdr[rdr.Length - 1].material.color.a > 0)
         {
-            col[i].enabled = false;
+            for(int i = 0; i < rdr.Length; i++)
+            {
+                rdr[i].material.color = new Color(rdr[i].material.color.r, rdr[i].material.color.g, rdr[i].material.color.b, rdr[i].material.color.a - 0.4f * Time.deltaTime);
+            }
+            yield return null;
         }
-        yield return new WaitForSeconds(1.5f);
-        ObjectPool.ReturnDebris(gameObject);
+        DebrisPool.ReturnDebris(gameObject);
     }
 }

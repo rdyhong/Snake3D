@@ -4,19 +4,22 @@ using UnityEngine;
 
 public class TailsController : MonoBehaviour
 {
-    private BoxCollider col;
+    public BoxCollider col;
     public bool isOnPlayer = false;
-    public int teamNum { get; private set; }
+    public int teamNum;
+    public Color color;
 
     private void Configue()
     {
         col = gameObject.GetComponent<BoxCollider>();
+        color = gameObject.GetComponent<Renderer>().material.color;
+        teamNum = 99;
     }
-
-    private void Start()
+    private void Awake()
     {
         Configue();
     }
+
     private void OnTriggerEnter(Collider other)
     {
         SnakeController sc = other.transform.GetComponent<SnakeController>();
@@ -26,28 +29,7 @@ public class TailsController : MonoBehaviour
         {
             if (sc.isDead) return;
             
-            sc.GrowSnake(gameObject ,transform.position);
+            sc.GrowSnake(gameObject);
         }
-    }
-
-    public void StartGet(int idx)
-    {
-        isOnPlayer = true;
-        GameManager.instance.SpawnMeal();
-        gameObject.GetComponent<BoxCollider>().enabled = false;
-        teamNum = idx;
-        PlayerGet(idx);
-    }
-    void PlayerGet(int idx)
-    {
-        if (idx == 1)
-        {
-            col.enabled = false;
-        }
-        else
-        {
-            col.enabled = true;
-        }
-        
     }
 }

@@ -18,14 +18,15 @@ public class DebrisScript : MonoBehaviour
         m_pos = new Vector3(0, -0.2f, 0);
     }
     
-    public void Expolsive(GameObject obj, Color m_color)
+    public void Expolsive(GameObject obj, Renderer ren)
     {
         transform.position = obj.transform.position;
         transform.rotation = obj.transform.rotation;
         gameObject.SetActive(true);
+        Renderer m_ren = ren;
         for (int i = 0; i < rb.Length; i++)
         {
-            rdr[i].material.color = m_color;
+            rdr[i].material = m_ren.material;
             if (Random.Range(0, 2) == 0) continue;
             rb[i].AddExplosionForce(m_force, m_pos, 40f);
         }
@@ -36,10 +37,6 @@ public class DebrisScript : MonoBehaviour
     {
         //Remove Colider after Addforce
         yield return new WaitForSeconds(0.1f);
-        // for(int i = 0; i < col.Length; i++)
-        // {
-        //     col[i].enabled = true;
-        // }
         
         //Fade
         while(rdr[rdr.Length - 1].material.color.a > 0)

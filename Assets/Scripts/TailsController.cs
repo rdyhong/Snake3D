@@ -7,12 +7,12 @@ public class TailsController : MonoBehaviour
     public BoxCollider col;
     public bool isOnPlayer = false;
     public int teamNum;
-    public Color color;
+    public Renderer ren;
 
     private void Configue()
     {
         col = gameObject.GetComponent<BoxCollider>();
-        color = gameObject.GetComponent<Renderer>().material.color;
+        ren = gameObject.GetComponent<Renderer>();
         teamNum = 99;
     }
     private void Awake()
@@ -22,14 +22,21 @@ public class TailsController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        SnakeController sc = other.transform.GetComponent<SnakeController>();
+        PlayerController pc = other.transform.GetComponent<PlayerController>();
         TailsController tc = other.transform.GetComponent<TailsController>();
-        if (isOnPlayer || tc != null) return;
+        // if (isOnPlayer || tc != null) return;
         if (other.transform.tag == "Player")
         {
-            if (sc.isDead) return;
-            
-            sc.GrowSnake(gameObject);
+            if (pc.isDead) return;
+            if(isOnPlayer)
+            {
+                pc.PlayerDead();
+                return;
+            }
+            pc.GrowSnake(gameObject);
         }
     }
+    public void LateColActive() => Invoke("LateCol", 1.0f);
+    void LateCol() => col.enabled = true;
+
 }

@@ -22,11 +22,17 @@ public class GameManager : MonoBehaviour
     public GameObject tailPf;
     public GameObject coinPf;
 
+    public bool isSingleMode {get; private set;}
+
+    private void Awake() 
+    {
+        isSingleMode = true;
+    }
     void Start()
     {
         cameraMovement = FindObjectOfType<CameraMovement>();
         SpawnMeal();
-        StartCoroutine(CoinCoroutine());
+        StartCoroutine(SpawnCoinCoroutine());
     }
 
     // Update is called once per frame
@@ -53,7 +59,7 @@ public class GameManager : MonoBehaviour
         Vector3 randPos = new Vector3(randX, 0, randY);
         Instantiate(coinPf, randPos, Quaternion.Euler(new Vector3(-90, 0, 0)));
     }
-    IEnumerator CoinCoroutine()
+    IEnumerator SpawnCoinCoroutine()
     {
         while(true)
         {

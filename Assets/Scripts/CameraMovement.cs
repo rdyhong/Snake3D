@@ -21,7 +21,6 @@ public class CameraMovement : MonoBehaviour
         {
             followCam.Follow = pDead.transform;
             followCam.LookAt = pDead.transform;
-            
         }
         else
         {

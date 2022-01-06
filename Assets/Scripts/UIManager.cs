@@ -19,9 +19,17 @@ public class UIManager : MonoBehaviour
     }
 
     public Text gameOver_T;
+    public Text coinText;
+    public int coin {get; private set;}
+    public Text scoreText;
+    public int score {get; private set;}
 
     private void Awake() 
     {
+        coin = 0;
+        score = 0;
+        scoreText.text = score.ToString();
+        coinText.text = coin.ToString();
         gameOver_T.enabled = false;
     }
     void Start()
@@ -33,4 +41,14 @@ public class UIManager : MonoBehaviour
     {
         gameOver_T.enabled = true;
     }
+
+    public void AddScoreAndCoin(int sc, int co)
+    {
+        score += sc;
+        coin += co;
+        scoreText.text = score.ToString();
+        coinText.text = coin.ToString();
+    }
+
+
 }

@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Transform tailPos;
-
     public int teamNum { get; private set; }
+    public bool isDead{get; private set;}
     private SphereCollider col;
     private Rigidbody rb;
     private PlayerInput playerInput;
@@ -15,22 +14,20 @@ public class PlayerController : MonoBehaviour
     public float SteerSpeed = 180;
     public float BodySpeed = 5;
     public int Gap = 10;
+    public GameObject tailPos;
     
-    // References
-    //public GameObject BodyPrefab;
-    public bool isDead;
 
     // Lists
-    private List<GameObject> BodyParts = new List<GameObject>();
+    public List<GameObject> BodyParts = new List<GameObject>();
     
     private List<Vector3> PositionsHistory = new List<Vector3>();
     
     private void Configue()
     {
+        tailPos = transform.Find("TailPos").gameObject;
         rb = gameObject.GetComponent<Rigidbody>();
         col = gameObject.GetComponent<SphereCollider>();
         playerInput = gameObject.GetComponent<PlayerInput>();
-        tailPos = transform.Find("TailPos");
         Gap = 10;
         isDead = false;
     }
@@ -52,14 +49,14 @@ public class PlayerController : MonoBehaviour
 
         // Steer
         transform.Rotate(Vector3.up * playerInput.dirX * SteerSpeed * Time.deltaTime);
-
         // Store position history
-        PositionsHistory.Insert(0, tailPos.position);
+        PositionsHistory.Insert(0, tailPos.transform.position);
 
         // Move body parts
         int index = 0;
         foreach (var body in BodyParts)
         {
+            // if(body == BodyParts[0]) body.GetComponent<TailsController>().col.enabled = false;
             Vector3 point = PositionsHistory[Mathf.Clamp(index * Gap, 0, PositionsHistory.Count - 1)];
 
             // Move body towards the point along the snakes path
@@ -81,11 +78,12 @@ public class PlayerController : MonoBehaviour
         //Set body
         TailsController tc = obj.GetComponent<TailsController>();
         tc.col.enabled = false;
-        tc.teamNum = teamNum;
         tc.isOnPlayer = true;
-        
-        if(obj == BodyParts[0]) tc.col.enabled = false; //Remove Collider at first body
-        else tc.LateColActive(); //Active Collider except Index[0]
+        tc.teamNum = teamNum;
+        tc.headPlayer = this.gameObject;
+        tc.LateColActive();
+
+        UIManager.instance.AddScoreAndCoin(50, 0);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -95,8 +93,6 @@ public class PlayerController : MonoBehaviour
         if (collision.transform.tag == "Tails")
         {
             TailsController tc = collision.transform.GetComponent<TailsController>();
-            
-            if (teamNum == tc.teamNum) return;
             if (tc.isOnPlayer)
             {
                 PlayerDead();
@@ -128,10 +124,25 @@ public class PlayerController : MonoBehaviour
         foreach (var body in BodyParts)
         {
             GameObject obj = DebrisPool.GetDebris();
-            Renderer ren = body.GetComponent<Renderer>();
-            obj.GetComponent<DebrisScript>().Expolsive(body, ren);
+            obj.GetComponent<DebrisScript>().Expolsive(body);
             body.SetActive(false);
             yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    public void RemoveHitBody(GameObject hit)
+    {
+        foreach(GameObject obj in BodyParts)
+        {
+            if(hit == obj)
+            {
+                BodyParts.Remove(obj);
+                obj.SetActive(false);
+                Destroy(obj);
+                GameObject debrisObj = DebrisPool.GetDebris();
+                debrisObj.GetComponent<DebrisScript>().Expolsive(obj);
+                return;
+            }
         }
     }
 

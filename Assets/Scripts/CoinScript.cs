@@ -41,10 +41,11 @@ public class CoinScript : MonoBehaviour
     private void Taken()
     {
         col.enabled = false;
-        StartCoroutine(Fade());
+        UIManager.instance.AddScoreAndCoin(10, 50);
+        StartCoroutine(FadeOut());
     }
 
-    IEnumerator Fade()
+    IEnumerator FadeOut()
     {
         Color c = rdr.material.color;
         rotSpeed = 100f;

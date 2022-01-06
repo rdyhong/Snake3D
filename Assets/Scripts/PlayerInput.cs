@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    private PlayerController sc;
+    private PlayerController pc;
     public float dirX { get; private set; }
 
     public bool btnLInput = false;
@@ -13,34 +13,18 @@ public class PlayerInput : MonoBehaviour
     public bool isMobile;
     private void Awake()
     {
-        sc = gameObject.GetComponent<PlayerController>();
+        pc = gameObject.GetComponent<PlayerController>();
         isMobile = false;
     }
 
     private void Update()
     {
-        if (sc.isDead) return;
+        if (pc.isDead) return;
         
-        Debug.Log(dirX);
-
         //Mobile Input
         if(isMobile)
         {
-            if(btnLInput)
-            {
-                if(dirX < -0.99f) dirX = -1;
-                else dirX = Mathf.Lerp(dirX, -1f, 5f * Time.deltaTime);
-            }
-            else if(btnRInput)
-            {
-                if(dirX > 0.99f) dirX = 1f;
-                else dirX = Mathf.Lerp(dirX, 1f, 5f * Time.deltaTime);
-            }
-            else
-            {
-                if(dirX < 0.01f && dirX > -0.01f) dirX = 0f;
-                else dirX = Mathf.Lerp(dirX, 0f, 5f * Time.deltaTime);
-            }
+            TouchInput();
         }
         //PC Input
         else
@@ -49,13 +33,31 @@ public class PlayerInput : MonoBehaviour
         }
 
         //Test Input
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)) // Key Space , Add near body
         {
-            sc.GetFreeTail();
+            pc.GetFreeTail();
         }
-        else if(Input.GetKeyDown(KeyCode.Backspace))
+        else if(Input.GetKeyDown(KeyCode.Backspace)) // Key BackSpace , Player Die
         {
-            sc.PlayerDead();
+            pc.PlayerDead();
+        }
+        else if(Input.GetKeyDown(KeyCode.P))  // Key P , Remove Body index 0
+        {
+            GameObject obj = pc.BodyParts[0];
+            pc.RemoveHitBody(obj);
+        }
+        else if(Input.GetKeyDown(KeyCode.M)) // Key M , Switch Touch, Keyboard
+        {
+            switch(isMobile)
+            {
+                case true:
+                isMobile = false;
+                break;
+
+                case false:
+                isMobile = true;
+                break;
+            }
         }
     }
 
@@ -63,6 +65,26 @@ public class PlayerInput : MonoBehaviour
     {
         dirX = Input.GetAxis("Horizontal");
     }
+    private void TouchInput()
+    {
+        if(btnLInput)
+        {
+            if(dirX < -0.99f) dirX = -1;
+            else dirX = Mathf.Lerp(dirX, -1f, 5f * Time.deltaTime);
+        }
+        else if(btnRInput)
+        {
+            if(dirX > 0.99f) dirX = 1f;
+            else dirX = Mathf.Lerp(dirX, 1f, 5f * Time.deltaTime);
+        }
+        else
+        {
+            if(dirX < 0.01f && dirX > -0.01f) dirX = 0f;
+            else dirX = Mathf.Lerp(dirX, 0f, 5f * Time.deltaTime);
+        }
+    }
+
+
     public void ButtonLInput() => btnLInput = true;
     public void ButtonRInput() => btnRInput = true;
 

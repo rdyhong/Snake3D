@@ -6,26 +6,28 @@ using Cinemachine;
 public class CameraMovement : MonoBehaviour
 {
     private CinemachineVirtualCamera followCam;
-    public Transform pPlay;
-    public Transform pDead;
+    private Vector3 deadLastPos = Vector3.zero;
+    private Transform player;
+    private Transform camPos;
+
     void Start()
     {
         followCam = gameObject.GetComponent<CinemachineVirtualCamera>();
-        //followCam.Follow = pPlay.transform;
-        //followCam.LookAt = pPlay.transform;
+        player = FindObjectOfType<PlayerController>().gameObject.transform;
+        camPos = player.transform.Find("CamPos");
+        followCam.Follow = camPos.transform;
+        followCam.LookAt = camPos.transform;
     }
 
-    public void IsPlayerDead(bool isdead)
+    private void Update() {
+        if(player.GetComponent<PlayerController>().state != PlayerController.State.Dead) return;
+        DeadCamRotate();
+    }
+    
+    private void DeadCamRotate()
     {
-        if (isdead)
-        {
-            followCam.Follow = pDead.transform;
-            followCam.LookAt = pDead.transform;
-        }
-        else
-        {
-            followCam.Follow = pPlay.transform;
-            followCam.LookAt = pPlay.transform;
-        }
+        Vector3 dir = player.GetComponent<PlayerController>().PositionsHistory[5] - camPos.transform.position;
+        Quaternion rot = Quaternion.LookRotation(dir.normalized);
+        camPos.transform.rotation = rot;
     }
 }

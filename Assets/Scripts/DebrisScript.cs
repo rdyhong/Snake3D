@@ -7,17 +7,47 @@ public class DebrisScript : MonoBehaviour
     private Rigidbody[] rb;
     private BoxCollider[] col;
     private Renderer[] rdr;
-    private float explosiveForce = 60f;
-    private Vector3 explosivePos = Vector3.zero;
-    private void Awake()
+    private Vector3[] debrisLocalPos;
+    private Quaternion[] debrisLocalRot;
+
+    private void Config()
     {
         rb = this.gameObject.GetComponentsInChildren<Rigidbody>();
         col = this.gameObject.GetComponentsInChildren<BoxCollider>();
         rdr = gameObject.GetComponentsInChildren<Renderer>();
-        explosiveForce = 140;
-        explosivePos = new Vector3(0, -0.2f, 0);
+
+        debrisLocalPos = new Vector3[transform.childCount];
+        debrisLocalRot = new Quaternion[transform.childCount];
+        
+        SetEachDebrisLocalPos(true);
     }
-    
+
+    private void Awake()
+    {
+        Config();
+    }
+
+    private void SetEachDebrisLocalPos(bool isSetting)
+    {
+        if(isSetting)
+        {
+            for(int i = 0; i < debrisLocalPos.Length; i++)
+            {
+                debrisLocalPos[i] = transform.GetChild(i).localPosition;
+                debrisLocalRot[i] = transform.GetChild(i).localRotation;
+            }
+        }
+        else
+        {
+            for(int i = 0; i < debrisLocalPos.Length; i++)
+            {
+                transform.GetChild(i).localPosition = debrisLocalPos[i];
+                transform.GetChild(i).localRotation = debrisLocalRot[i];
+                rdr[i].material.color = new Color(rdr[i].material.color.a, rdr[i].material.color.g, rdr[i].material.color.b, 1);
+            }
+        }
+    }
+
     public void Expolsive(GameObject obj)
     {
         transform.position = obj.transform.position;
@@ -28,14 +58,14 @@ public class DebrisScript : MonoBehaviour
         {
             rdr[i].material = m_ren.material;
             if (Random.Range(0, 2) == 0) continue; // Random AddForce 1/2
-            rb[i].AddExplosionForce(explosiveForce, explosivePos, 40f);
+            rb[i].AddExplosionForce(150f, new Vector3(0,-0.2f,0), 40f);
         }
         StartCoroutine(DestroyCoroutine());
     }
 
     IEnumerator DestroyCoroutine()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
 
         //Fade out debris
         while(rdr[rdr.Length - 1].material.color.a > 0)
@@ -46,6 +76,7 @@ public class DebrisScript : MonoBehaviour
             }
             yield return null;
         }
-        DebrisPool.ReturnDebris(gameObject);
+        SetEachDebrisLocalPos(false);
+        DebrisPool.ReturnDebris(this.gameObject);
     }
 }

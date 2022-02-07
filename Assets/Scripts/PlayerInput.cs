@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -19,18 +20,16 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        if (pc.isDead) return;
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if (pc.state == PlayerController.State.Dead) return;
         
-        //Mobile Input
-        if(isMobile)
-        {
-            TouchInput();
-        }
-        //PC Input
-        else
-        {
-            KeyboardInput();
-        }
+        if(isMobile) TouchInput();   //Mobile Input
+        else KeyboardInput();   //PC Input
+
 
         //Test Input
         if (Input.GetKeyDown(KeyCode.Space)) // Key Space , Add near body
@@ -39,7 +38,7 @@ public class PlayerInput : MonoBehaviour
         }
         else if(Input.GetKeyDown(KeyCode.Backspace)) // Key BackSpace , Player Die
         {
-            pc.PlayerDead();
+            GameManager.instance.gameOver();
         }
         else if(Input.GetKeyDown(KeyCode.P))  // Key P , Remove Body index 0
         {
@@ -48,23 +47,13 @@ public class PlayerInput : MonoBehaviour
         }
         else if(Input.GetKeyDown(KeyCode.M)) // Key M , Switch Touch, Keyboard
         {
-            switch(isMobile)
-            {
-                case true:
-                isMobile = false;
-                break;
-
-                case false:
-                isMobile = true;
-                break;
-            }
+            if(isMobile) isMobile = false;
+            else isMobile = true;
         }
     }
 
-    private void KeyboardInput()
-    {
-        dirX = Input.GetAxis("Horizontal");
-    }
+    private void KeyboardInput() => dirX = Input.GetAxis("Horizontal");
+
     private void TouchInput()
     {
         if(btnLInput)

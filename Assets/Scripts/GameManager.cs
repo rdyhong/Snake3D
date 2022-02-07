@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    CameraMovement cameraMovement;
-    public static GameManager m_instance;
+    private static GameManager m_instance = null;
     public static GameManager instance
     {
         get
@@ -18,59 +16,53 @@ public class GameManager : MonoBehaviour
             return m_instance;
         }
     }
+    public delegate void GameStart();
+    public GameStart gameStart;
 
-    public GameObject tailPf;
-    public GameObject coinPf;
+    public delegate void GameOver();
+    public GameOver gameOver;
 
-    public bool isSingleMode {get; private set;}
+    private Transform spawnPoint1 = null;
+    private Transform spawnPoint2 = null;
+    
+    public bool isPlaying = true;
 
+    private void Config()
+    {
+        gameStart += m_GameStart;
+        gameOver += m_GameOver;
+
+        spawnPoint1 = GameObject.Find("SpawnPoint1").transform;
+        spawnPoint2 = GameObject.Find("SpawnPoint2").transform;
+        SpawnPlayer();
+    }
     private void Awake() 
     {
-        isSingleMode = true;
-    }
-    void Start()
-    {
-        cameraMovement = FindObjectOfType<CameraMovement>();
-        SpawnMeal();
-        StartCoroutine(SpawnCoinCoroutine());
+        if(m_instance == null) m_instance = this;
+        else Destroy(this.gameObject);
+
+        Config();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(0);
-        }
-    }
-    
-    public void SpawnMeal()
-    {
-        float randX = Random.Range(-10f, 10f);
-        float randY = Random.Range(-10f, 10f);
-        Vector3 randPos = new Vector3(randX, 0, randY);
-        TailsController tail = Instantiate(tailPf, randPos, Quaternion.identity).GetComponent<TailsController>();
+        gameStart();
     }
 
-    public void SpawnCoin()
+    private void m_GameStart()
     {
-        float randX = Random.Range(-10f, 10f);
-        float randY = Random.Range(-10f, 10f);
-        Vector3 randPos = new Vector3(randX, 0, randY);
-        Instantiate(coinPf, randPos, Quaternion.Euler(new Vector3(-90, 0, 0)));
+        isPlaying = true;
     }
-    IEnumerator SpawnCoinCoroutine()
+    private void m_GameOver()
     {
-        while(true)
-        {
-            SpawnCoin();
-            yield return new WaitForSeconds(2.0f);
-        }
-    }
-
-    public void GameOver()
-    {
+        isPlaying = false;
         Debug.Log("GameManager : GameOver");
-        //cameraMovement.IsPlayerDead(true);
+    }
+
+    private void SpawnPlayer()
+    {
+        GameObject player = FindObjectOfType<PlayerController>().gameObject;
+        player.transform.position = spawnPoint1.position;
+        player.transform.rotation = spawnPoint1.rotation;
     }
 }

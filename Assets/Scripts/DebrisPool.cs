@@ -17,18 +17,31 @@ public class DebrisPool : MonoBehaviour
         }
     }
 
-    [SerializeField]
     private GameObject poolingObjPrefab;
     private Queue<GameObject> poolingObjQueue = new Queue<GameObject>();
 
+    private void Config()
+    {
+        poolingObjPrefab = Resources.Load<GameObject>("Debris");
+        Initialize(300);
+    }
     private void Awake()
     {
-        Initialize(500);
+        if(m_instance == null)
+        {
+            m_instance = this;
+            // DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        Config();
     }
 
     private GameObject CreateNewGameObject()
     {
-        var newObj = Instantiate(poolingObjPrefab, transform);
+        var newObj = Instantiate(poolingObjPrefab, transform.position, Quaternion.identity, this.transform);
         newObj.SetActive(false);
         return newObj;
     }
@@ -63,6 +76,8 @@ public class DebrisPool : MonoBehaviour
     {
         obj.SetActive(false);
         obj.transform.SetParent(instance.transform);
+        obj.transform.localPosition = new Vector3(0, 0, 0);
+        obj.transform.localRotation = Quaternion.Euler(new Vector3(0,0,0));
         instance.poolingObjQueue.Enqueue(obj);
     }
 }

@@ -4,10 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Tails
   - Debris
   - Item
   - Vehicle
+  - Obstacle
+  - AIPlayer
+  - Body
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - 
   - Player
   - Debris
-  - 
+  - Body
   - 
   - 
   - 

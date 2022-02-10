@@ -20,15 +20,17 @@ public class UIManager : MonoBehaviour
     }
 
     public PlayerController pc;
-    public Text gameOver_T;
+    private Text gameOverText;
     public Text coinText;
     public Text scoreText;
     public int coin { get; private set; }
     public int score { get; private set; }
 
 
-    private void Config()
+    private void Init()
     {
+        GameObject canvas = GameObject.Find("Canvas");
+        gameOverText = canvas.transform.Find("GameOverText").GetComponent<Text>();;
         coin = 0;
         score = 0;
         scoreText.text = score.ToString();
@@ -40,7 +42,7 @@ public class UIManager : MonoBehaviour
         if(m_instance == null) m_instance = this;
         else Destroy(this.gameObject);
         
-        Config();
+        Init();
     }
     private void Start()
     {
@@ -62,13 +64,13 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator MoveGameOverText()
     {
-        Vector3 curPos = gameOver_T.transform.position;
-        Vector3 targetPos = gameOver_T.transform.position + new Vector3(0, -50f, 0);
-        gameOver_T.transform.DOMove(targetPos, 1.5f);
+        Vector3 curPos = gameOverText.transform.position;
+        Vector3 targetPos = gameOverText.transform.position + new Vector3(0, -50f, 0);
+        gameOverText.transform.DOMove(targetPos, 1.5f);
 
-        yield return new WaitUntil(()=>gameOver_T.transform.position == targetPos);
+        yield return new WaitUntil(()=>gameOverText.transform.position == targetPos);
 
         yield return new WaitForSeconds(5f);
-        gameOver_T.transform.DOMove(curPos, 1.5f);
+        gameOverText.transform.DOMove(curPos, 1.5f);
     }
 }

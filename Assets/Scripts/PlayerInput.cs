@@ -11,11 +11,10 @@ public class PlayerInput : MonoBehaviour
     public bool btnLInput = false;
     public bool btnRInput = false;
 
-    public bool isMobile;
+    private bool isMobile = false;
     private void Awake()
     {
         pc = gameObject.GetComponent<PlayerController>();
-        isMobile = false;
     }
 
     private void Update()
@@ -32,23 +31,40 @@ public class PlayerInput : MonoBehaviour
 
 
         //Test Input
-        if (Input.GetKeyDown(KeyCode.Space)) // Key Space , Add near body
+        if (Input.GetKeyDown(KeyCode.Space)) // Key Space - Add near body
         {
             pc.GetFreeTail();
         }
-        else if(Input.GetKeyDown(KeyCode.Backspace)) // Key BackSpace , Player Die
+        else if(Input.GetKeyDown(KeyCode.Backspace)) // Key BackSpace - Player Die
         {
             GameManager.instance.gameOver();
         }
-        else if(Input.GetKeyDown(KeyCode.P))  // Key P , Remove Body index 0
+        else if(Input.GetKeyDown(KeyCode.P))  // Key P - Remove Body index 0
         {
             GameObject obj = pc.BodyParts[0];
             pc.RemoveHitBody(obj);
         }
-        else if(Input.GetKeyDown(KeyCode.M)) // Key M , Switch Touch, Keyboard
+        else if(Input.GetKeyDown(KeyCode.M)) // Key M - Switch Mobile & Keyboard
         {
             if(isMobile) isMobile = false;
             else isMobile = true;
+        }
+        
+        // Skill
+        if(pc.skillState == PlayerController.SkillState.Ready)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                pc.Skill_Jumper();
+            }
+            else if(Input.GetKeyDown(KeyCode.Q))
+            {
+                pc.Skill_ThrowObj();
+            }
+            else if(Input.GetKeyDown(KeyCode.Z))
+            {
+                pc.Skill_Shield();
+            }
         }
     }
 

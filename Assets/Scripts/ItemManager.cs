@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
-    private GameObject coinPrefab;
+    private GameObject coinPf;
+    private GameObject itemBoxPf;
 
     private void Awake()
     {
-        coinPrefab = Resources.Load<GameObject>("Coin");
+        coinPf = Resources.Load<GameObject>("Coin");
+        itemBoxPf = Resources.Load<GameObject>("ItemBox");
 
         GameManager.instance.gameStart += GameStart;
         GameManager.instance.gameOver += GameOver;
@@ -29,7 +31,15 @@ public class ItemManager : MonoBehaviour
         float randX = Random.Range(-10f, 10f);
         float randY = Random.Range(-10f, 10f);
         Vector3 randPos = new Vector3(randX, 0, randY);
-        Instantiate(coinPrefab, randPos, Quaternion.Euler(new Vector3(-90, 0, 0)));
+        Instantiate(coinPf, randPos, Quaternion.identity);
+    }
+
+    private void Spawn_ItemBox()
+    {
+        float randX = Random.Range(-10f, 10f);
+        float randY = Random.Range(-10f, 10f);
+        Vector3 randPos = new Vector3(randX, 0, randY);
+        Instantiate(itemBoxPf, randPos, Quaternion.identity);
     }
 
     private void Spawn(bool isStart)
@@ -52,6 +62,7 @@ public class ItemManager : MonoBehaviour
         {
             yield return new WaitForSeconds(5.0f);
             SpawnCoin();
+            Spawn_ItemBox();
         }
     }
 }

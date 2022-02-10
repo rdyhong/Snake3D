@@ -22,7 +22,7 @@ public class CoinScript : MonoBehaviour
     }
     void Rotate()
     {
-        transform.Rotate(new Vector3(0, 0, rotSpeed));
+        transform.Rotate(new Vector3(0, rotSpeed, 0));
     }
 
     private void OnTriggerEnter(Collider other) 

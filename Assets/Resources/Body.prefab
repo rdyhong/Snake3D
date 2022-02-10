@@ -98,9 +98,7 @@ MonoBehaviour:
   col: {fileID: 0}
   isOnPlayer: 0
   teamNum: 0
-  ren: {fileID: 0}
-  headPlayer: {fileID: 0}
-  headPc: {fileID: 0}
+  linkLine: {fileID: 4852285964601224640, guid: b27811ebb5edc46b5be8c71848b9ef63, type: 3}
 --- !u!65 &3207375740617086299
 BoxCollider:
   m_ObjectHideFlags: 0

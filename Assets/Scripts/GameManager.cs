@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
             return m_instance;
         }
     }
+    public delegate void JoinGame();
+    public JoinGame joinGame;
     public delegate void GameStart();
     public GameStart gameStart;
 
@@ -29,9 +31,12 @@ public class GameManager : MonoBehaviour
 
     private void Config()
     {
+        joinGame += m_joinGame;
         gameStart += m_GameStart;
         gameOver += m_GameOver;
 
+
+        // Set SpawnPoint
         spawnPoint1 = GameObject.Find("SpawnPoint1").transform;
         spawnPoint2 = GameObject.Find("SpawnPoint2").transform;
         SpawnPlayer();
@@ -49,6 +54,10 @@ public class GameManager : MonoBehaviour
         gameStart();
     }
 
+    private void m_joinGame()
+    {
+        StartCoroutine(WaitForStart());
+    }
     private void m_GameStart()
     {
         isPlaying = true;
@@ -64,5 +73,11 @@ public class GameManager : MonoBehaviour
         GameObject player = FindObjectOfType<PlayerController>().gameObject;
         player.transform.position = spawnPoint1.position;
         player.transform.rotation = spawnPoint1.rotation;
+    }
+
+    private IEnumerator WaitForStart()
+    {
+        yield return null;
+        
     }
 }

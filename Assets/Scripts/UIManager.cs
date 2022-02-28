@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private GameObject canvas = null;
+
     public PlayerController pc;
     private Text gameOverText;
     public Text coinText;
@@ -29,7 +31,7 @@ public class UIManager : MonoBehaviour
 
     private void Init()
     {
-        GameObject canvas = GameObject.Find("Canvas");
+        canvas = GameObject.Find("Canvas");
         gameOverText = canvas.transform.Find("GameOverText").GetComponent<Text>();;
         coin = 0;
         score = 0;
@@ -43,6 +45,8 @@ public class UIManager : MonoBehaviour
         else Destroy(this.gameObject);
         
         Init();
+
+        GameManager.instance.joinGame += JoinGame;
     }
     private void Start()
     {
@@ -72,5 +76,22 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
         gameOverText.transform.DOMove(curPos, 1.5f);
+    }
+
+    private void JoinGame()
+    {
+        StartCoroutine(OnLoadScene());
+    }
+    private IEnumerator OnLoadScene()
+    {
+        GameObject coverImgObj = canvas.transform.Find("CoverImage").gameObject;
+        Image coverImg = coverImgObj.GetComponent<Image>();
+
+        coverImgObj.SetActive(true);
+        coverImg.DOColor(new Color(coverImg.color.r, coverImg.color.g, coverImg.color.b, 0), 1f);
+
+        yield return new WaitUntil(() => coverImg.color.a == 0);
+
+        coverImgObj.SetActive(false);
     }
 }

@@ -43,8 +43,12 @@ public class ItemBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        
         if(other.tag == "Player")
         {
+            PlayerController pc = other.GetComponent<PlayerController>();
+            if(pc.state == PlayerController.State.Dead) return;
+            
             BoxOpen();
         }
     }
@@ -66,8 +70,8 @@ public class ItemBox : MonoBehaviour
             }
             Invoke("DestroyThis", 1);
         }
-        else{
-            Debug.Log("It's Empty!@!@!");
+        else
+        {
             Destroy(this.gameObject);
         }
     }

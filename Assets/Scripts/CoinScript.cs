@@ -13,7 +13,6 @@ public class CoinScript : MonoBehaviour
     {
         col = this.gameObject.GetComponent<BoxCollider>();
         rdr = this.gameObject.GetComponent<Renderer>();
-        targetPos = transform.position + new Vector3(0, 2.5f, 0);
     }
 
     private void FixedUpdate() 
@@ -29,8 +28,8 @@ public class CoinScript : MonoBehaviour
     {
         if(other.transform.tag == "Player")
         {
-            PlayerController sc = other.transform.GetComponent<PlayerController>();
-            if(sc.state == PlayerController.State.Dead) return;
+            PlayerController pc = other.transform.GetComponent<PlayerController>();
+            if(pc.state == PlayerController.State.Dead) return;
             Taken();
         }
     }
@@ -46,6 +45,7 @@ public class CoinScript : MonoBehaviour
     {
         Color c = rdr.material.color;
         rotSpeed = 100f;
+        targetPos = transform.position + new Vector3(0, 2.5f, 0);
         while(c.a > 0)
         {
             rotSpeed = Mathf.Lerp(rotSpeed, 0f, Time.deltaTime * 3f); // change rotation speed rotSpeed to 0 while fadeout

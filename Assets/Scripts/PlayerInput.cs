@@ -51,19 +51,19 @@ public class PlayerInput : MonoBehaviour
         }
         
         // Skill
-        if(pc.skillState == PlayerController.SkillState.Ready)
+        if(pc.ps.skillState == PlayerSkill.SkillState.Ready)
         {
             if(Input.GetKeyDown(KeyCode.E))
             {
-                pc.Skill_Jumper();
+                pc.ps.Skill_Jumper();
             }
             else if(Input.GetKeyDown(KeyCode.Q))
             {
-                pc.Skill_ThrowObj();
+                pc.ps.Skill_ThrowObj();
             }
             else if(Input.GetKeyDown(KeyCode.Z))
             {
-                pc.Skill_Shield();
+                pc.ps.Skill_Shield();
             }
         }
     }
